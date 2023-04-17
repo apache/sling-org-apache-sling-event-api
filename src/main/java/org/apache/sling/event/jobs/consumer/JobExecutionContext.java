@@ -86,6 +86,13 @@ public interface JobExecutionContext {
     void updateProgress(long eta);
 
     /**
+     * Sets a property on the job. This property can be retrieved using {@link org.apache.sling.event.jobs.Job#getProperty(String)}.
+     * @param name The property name
+     * @param value The property value
+     */
+    void setProperty(String name, Object value);
+
+    /**
      * Log a message.
      * A job consumer can use this method during job processing to add additional information
      * about the current state of job processing.
