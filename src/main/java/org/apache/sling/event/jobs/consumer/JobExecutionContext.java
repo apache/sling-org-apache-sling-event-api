@@ -18,6 +18,7 @@
  */
 package org.apache.sling.event.jobs.consumer;
 
+import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -90,7 +91,7 @@ public interface JobExecutionContext {
      * @param name The property name
      * @param value The property value
      */
-    void setProperty(String name, Object value);
+    void setProperty(@NotNull String name, @NotNull Object value);
 
     /**
      * Log a message.
@@ -105,7 +106,7 @@ public interface JobExecutionContext {
      * @param message A message
      * @param args Additional arguments
      */
-    void log(String message, Object...args);
+    void log(@NotNull String message, Object...args);
 
     /**
      * Build a result for the processing.
