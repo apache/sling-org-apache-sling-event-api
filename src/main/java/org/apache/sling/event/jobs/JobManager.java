@@ -21,6 +21,8 @@ package org.apache.sling.event.jobs;
 import java.util.Collection;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 
@@ -45,26 +47,26 @@ public interface JobManager {
      * Return statistics information about all queues.
      * @return The statistics.
      */
-    Statistics getStatistics();
+    @NotNull Statistics getStatistics();
 
     /**
      * Return statistics information about job topics.
      * @return The statistics for all topics.
      */
-    Iterable<TopicStatistics> getTopicStatistics();
+    @NotNull Iterable<TopicStatistics> getTopicStatistics();
 
     /**
      * Return a queue with a specific name (if running)
      * @param name The queue name
      * @return The queue or <code>null</code>
      */
-    Queue getQueue(String name);
+    @Nullable Queue getQueue(@NotNull String name);
 
     /**
      * Return an iterator for all available queues.
      * @return An iterator for all queues.
      */
-    Iterable<Queue> getQueues();
+    @NotNull Iterable<Queue> getQueues();
 
     /**
      * The requested job types for the query.
@@ -99,11 +101,11 @@ public interface JobManager {
      * as well.
      *
      * @param topic The required job topic.
-     * @param properties Optional job properties. The properties must be serializable.
+     * @param properties Optional job properties. The properties must be serializable. May be <code>null</code>.
      * @return The new job - or <code>null</code> if the job could not be created.
      * @since 1.2
      */
-    Job addJob(String topic, Map<String, Object> properties);
+    @Nullable Job addJob(@NotNull String topic, Map<String, Object> properties);
 
     /**
      * Return a job based on the unique id.
@@ -115,7 +117,7 @@ public interface JobManager {
      * @return A job or <code>null</code>
      * @since 1.2
      */
-    Job getJobById(String jobId);
+    @Nullable Job getJobById(@NotNull String jobId);
 
     /**
      * Removes the job even if it is currently in processing.
@@ -129,24 +131,33 @@ public interface JobManager {
      *         <code>false</code> otherwise.
      * @since 1.2
      */
-    boolean removeJobById(String jobId);
+    boolean removeJobById(@NotNull String jobId);
 
     /**
      * Find a job - either queued or active.
      *
      * This method searches for a job with the given topic and filter properties. If more than one
      * job matches, the first one found is returned which could be any of the matching jobs.
-     *
+     * <p>
      * The returned job object is a snapshot of the job state taken at the time of the call. Updates
      * to the job state are not reflected and the client needs to get a new job object using the job id.
      *
      * @param topic Topic is required.
      * @param template The map acts like a template. The searched job
-     *                    must match the template (AND query).
+     *                    must match the template (AND query). May be <code>null</code> to not further restrict the query. If not-null the template is matched differently against the job properties depending on the key prefix:
+     *                    <ul>
+     *                    <li>if {@code <=} the job matches if the job property value is less than or equal to the template's value (only applicable to numerical values)</li>
+     *                    <li>if {@code >=} the job matches if the job property value is greater than or equal to the template's value (only applicable to numerical values)</li>
+     *                    <li>if {@code <} the job matches if the job property value is less than the template's value (only applicable to numerical values)</li>
+     *                    <li>if {@code <} the job matches if the job property value is greater than the template's value (only applicable to numerical values)</li>
+     *                    <li>if {@code =} or no prefix at all the job matches if the job property value is equal to the template's value</li>
+     *                    </ul>
+     *                    The template's key without the prefix determines the job property name to check.
      * @return A job or <code>null</code>
+     * @see #findJobs(QueryType, String, long, Map...)
      * @since 1.2
      */
-    Job getJob(String topic, Map<String, Object> template);
+    @Nullable Job getJob(@NotNull String topic, Map<String, Object> template);
 
     /**
      * Return all jobs of a given type.
@@ -157,21 +168,29 @@ public interface JobManager {
      * queued jobs, started jobs or the combination can be returned.
      * If the history is returned, the result set is sorted in descending order, listening the newest entry
      * first. For unfinished jobs, the result set is sorted in ascending order.
-     *
+     * <p>
      * The returned job objects are a snapshot of the jobs state taken at the time of the call. Updates
      * to the job states are not reflected and the client needs to get new job objects.
      *
-     * @param type Required parameter for the type. See above.
+     * @param type Required parameter for the type. See above. 
      * @param topic Topic can be used as a filter, if it is non-null, only jobs with this topic will be returned.
      * @param limit A positive number indicating the maximum number of jobs returned by the iterator. A value
      *              of zero or less indicates that all jobs should be returned.
-     * @param templates A list of filter property maps. Each map acts like a template. The searched job
+     * @param templates A list of filter property maps. Each map acts like a template. The searched job properties
      *                    must match the template (AND query). By providing several maps, different filters
-     *                    are possible (OR query).
+     *                    are possible (OR query). The template is matched differently against the job properties depending on the key prefix:
+     *                    <ul>
+     *                    <li>if {@code <=} the job matches if the job property value is less than or equal to the template's value (only applicable to numerical values)</li>
+     *                    <li>if {@code >=} the job matches if the job property value is greater than or equal to the template's value (only applicable to numerical values)</li>
+     *                    <li>if {@code <} the job matches if the job property value is less than the template's value (only applicable to numerical values)</li>
+     *                    <li>if {@code <} the job matches if the job property value is greater than the template's value (only applicable to numerical values)</li>
+     *                    <li>if {@code =} or no prefix at all the job matches if the job property value is equal to the template's value</li>
+     *                    </ul>
+     *                    The template's key without the prefix determines the job property name to check.
      * @return A collection of jobs - the collection might be empty.
      * @since 1.2
      */
-    Collection<Job> findJobs(QueryType type, String topic, long limit, Map<String, Object>... templates);
+    @NotNull Collection<Job> findJobs(@NotNull QueryType type, String topic, long limit, Map<String, Object>... templates);
 
     /**
      * Stop a job.
@@ -181,7 +200,7 @@ public interface JobManager {
      * @param jobId The job id
      * @since 1.3
      */
-    void stopJobById(String jobId);
+    void stopJobById(@NotNull String jobId);
 
     /**
      * Retry a cancelled job.
@@ -191,7 +210,7 @@ public interface JobManager {
      * @param jobId The job id.
      * @return If the job is requeued, the new job object otherwise <code>null</code>
      */
-    Job retryJobById(String jobId);
+    Job retryJobById(@NotNull String jobId);
 
     /**
      * Fluent API to create, start and schedule new jobs
@@ -199,14 +218,14 @@ public interface JobManager {
      * @return A job builder
      * @since 1.3
      */
-    JobBuilder createJob(final String topic);
+    @NotNull JobBuilder createJob(@NotNull final String topic);
 
     /**
      * Return all available job schedules.
      * @return A collection of scheduled job infos
      * @since 1.3
      */
-    Collection<ScheduledJobInfo> getScheduledJobs();
+    @NotNull Collection<ScheduledJobInfo> getScheduledJobs();
 
     /**
      * Return all matching available job schedules.
@@ -219,5 +238,5 @@ public interface JobManager {
      * @return All matching scheduled job infos.
      * @since 1.4
      */
-    Collection<ScheduledJobInfo> getScheduledJobs(String topic, long limit, Map<String, Object>... templates);
+    @NotNull Collection<ScheduledJobInfo> getScheduledJobs(String topic, long limit, Map<String, Object>... templates);
 }

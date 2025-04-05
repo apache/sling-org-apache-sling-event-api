@@ -179,7 +179,7 @@ public interface Job {
         SUCCEEDED,  // processing finished successfully
         STOPPED,    // processing was stopped by a user
         GIVEN_UP,   // number of retries reached
-        ERROR,      // processing signaled CANCELLED or throw an exception
+        ERROR,      // processing signaled CANCELLED or threw an exception
         DROPPED     // dropped jobs
     };
 
