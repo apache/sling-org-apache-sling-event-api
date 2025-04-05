@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -38,14 +40,14 @@ public interface JobBuilder {
      * @param props The properties of the job. All values must be {@code java.io.Serializable}.
      * @return The job builder to continue building.
      */
-    JobBuilder properties(final Map<String, Object> props);
+    @NotNull JobBuilder properties(@NotNull final Map<String, Object> props);
 
     /**
      * Add the job.
      * @return The job or <code>null</code>
      * @see JobManager#addJob(String, Map)
      */
-    Job add();
+    @Nullable Job add();
 
     /**
      * Add the job.
@@ -53,13 +55,13 @@ public interface JobBuilder {
      * @return The job or <code>null</code>
      * @see JobManager#addJob(String, Map)
      */
-    Job add(final List<String> errors);
+    @Nullable Job add(final List<String> errors);
 
     /**
      * Schedule the job
      * @return A schedule builder to schedule the jobs
      */
-    ScheduleBuilder schedule();
+    @NotNull ScheduleBuilder schedule();
 
     /**
      * This is a builder interface for creating schedule information
@@ -71,7 +73,7 @@ public interface JobBuilder {
          * Invoking this method several times has the same effect as calling it just once.
          * @return The schedule builder to continue building.
          */
-        ScheduleBuilder suspend();
+        @NotNull ScheduleBuilder suspend();
 
         /**
          * Schedule the job hourly at the given minute.
@@ -79,7 +81,7 @@ public interface JobBuilder {
          * @param minute Between 0 and 59.
          * @return The schedule builder to continue building.
          */
-        ScheduleBuilder hourly(final int minute);
+        @NotNull ScheduleBuilder hourly(final int minute);
 
         /**
          * Schedule the job daily at the given time.
@@ -89,7 +91,7 @@ public interface JobBuilder {
          * @param minute Minute of the hour ranging from 0 to 59.
          * @return The schedule builder to continue building.
          */
-        ScheduleBuilder daily(final int hour, final int minute);
+        @NotNull ScheduleBuilder daily(final int hour, final int minute);
 
         /**
          * Schedule the job weekly, the time needs to be specified in addition.
@@ -101,7 +103,7 @@ public interface JobBuilder {
          * @param minute Minute of the hour ranging from 0 to 59.
          * @return The schedule builder to continue building.
          */
-        ScheduleBuilder weekly(final int day, final int hour, final int minute);
+        @NotNull ScheduleBuilder weekly(final int day, final int hour, final int minute);
 
         /**
          * Schedule the job monthly, the time needs to be specified in addition.
@@ -113,7 +115,7 @@ public interface JobBuilder {
          * @param minute Minute of the hour ranging from 0 to 59.
          * @return The schedule builder to continue building.
          */
-        ScheduleBuilder monthly(final int day, final int hour, final int minute);
+        @NotNull ScheduleBuilder monthly(final int day, final int hour, final int minute);
 
         /**
          * Schedule the job yearly, the time needs to be specified in addition.
@@ -127,7 +129,7 @@ public interface JobBuilder {
          * @param minute Minute of the hour ranging from 0 to 59.
          * @return The schedule builder to continue building.
          */
-        ScheduleBuilder yearly(final int month, final int day, final int hour, final int minute);
+        @NotNull ScheduleBuilder yearly(final int month, final int day, final int hour, final int minute);
 
         /**
          * Schedule the job for a specific date.
@@ -135,7 +137,7 @@ public interface JobBuilder {
          * @param date The date
          * @return The schedule builder to continue building.
          */
-        ScheduleBuilder at(final Date date);
+        @NotNull ScheduleBuilder at(@NotNull final Date date);
 
         /**
          * Schedule the job for according to the cron expression.
@@ -143,19 +145,19 @@ public interface JobBuilder {
          * @param expression The cron expression
          * @return The schedule builder to continue building.
          */
-        ScheduleBuilder cron(final String expression);
+        @NotNull ScheduleBuilder cron(@NotNull final String expression);
 
         /**
          * Finally add the job to the schedule
          * @return Returns the info object if the job could be scheduled, <code>null</code>otherwise.
          */
-        ScheduledJobInfo add();
+        @Nullable ScheduledJobInfo add();
 
         /**
          * Finally add the job to the schedule
          * @param errors Optional list which will be filled with error messages.
          * @return Returns the info object if the job could be scheduled, <code>null</code>otherwise.
          */
-        ScheduledJobInfo add(final List<String> errors);
+        @Nullable ScheduledJobInfo add(final List<String> errors);
     }
 }
