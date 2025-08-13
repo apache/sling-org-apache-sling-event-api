@@ -25,10 +25,14 @@ import org.osgi.annotation.versioning.ProviderType;
 
 
 /**
- * A job
+ * A job encapsulates a task processed by a job consumer. The job may already be finished at the time a Job object is created.
+ * It exposes metadata in form of properties.
+ * A job is <strong>immutable</strong>, meaning that once created the properties/state of the job will not change.
+ * (In the edge case of the job being processed on the same instance some properties of the job instance might be updated
+ * but you should not rely on it).
+ * <p>
  *
- *
- * Property Types
+ * <h1>Property Types</h1>
  *
  * In general all scalar types and all serializable classes are supported as
  * property types. However, in order for deseralizing classes these must be
@@ -41,7 +45,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * for this behavior as it only supports long but neither integer nor short.
  * Therefore if you are dealing with numbers, use the {@link #getProperty(String, Class)}
  * method to get the correct type instead of directly casting it.
- *
+ * 
  * @since 1.2
  */
 @ProviderType
