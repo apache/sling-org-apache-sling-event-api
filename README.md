@@ -9,7 +9,7 @@ This module is part of the [Apache Sling](https://sling.apache.org) project.
 For user documentation see https://sling.apache.org/documentation/bundles/apache-sling-eventing-and-job-handling.html. 
 This README contains information on the API details.
 
-Note that the default implementation has been spun-off into a separate bundle: sling.event.resource
+Note that the default implementation has been spun-off into a separate bundle: <https://github.com/apache/sling-org-apache-sling-event>.
 
 ## Bundle
 
